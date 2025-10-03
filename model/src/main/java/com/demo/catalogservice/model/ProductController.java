@@ -9,6 +9,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class ProductController {
 
     private final ProductRepository repo;
@@ -19,23 +20,25 @@ public class ProductController {
     }
 
     @GetMapping
+    @CrossOrigin(origins = "*")
     public List<Product> getAll() {
         return repo.findAll();
     }
 
     @PostMapping("/add")
+    @CrossOrigin(origins = "*")
     public Product add(@RequestBody Product product,
-                       @RequestHeader("Authorization") String token) {
-        // Chama Auth Service para validar (simplificado)
-        Map response = restTemplate.postForObject(
-                "http://localhost:8081/auth/login",
-                Map.of("username", "admin", "password", "123"),
-                Map.class);
-
-        if (response.containsKey("token")) {
-            return repo.save(product);
-        } else {
+                       @RequestHeader(value = "Authorization", required = false) String token) {
+        // Validação simples do token
+        if (token == null || token.isEmpty()) {
+            throw new RuntimeException("Token de autorização necessário");
+        }
+        
+        // Verifica se o token é válido (simplificado)
+        if (!"fake-jwt-token-admin".equals(token)) {
             throw new RuntimeException("Token inválido");
         }
+        
+        return repo.save(product);
     }
 }

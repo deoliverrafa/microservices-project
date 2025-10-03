@@ -6,9 +6,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class AuthController {
 
     @PostMapping("/login")
+    @CrossOrigin(origins = "*")
     public Map<String, String> login(@RequestBody Map<String, String> body) {
         String user = body.get("username");
         String pass = body.get("password");

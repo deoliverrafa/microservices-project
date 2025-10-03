@@ -4,8 +4,26 @@ services:
     build: ./controller
     ports:
       - "8081:8081"
+    networks:
+      - microservices-network
 
   catalog-service:
     build: ./model
     ports:
       - "8082:8082"
+    networks:
+      - microservices-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - controller-service
+      - catalog-service
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge

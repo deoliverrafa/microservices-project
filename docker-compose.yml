@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  controller-service:
+    build: ./controller
+    ports:
+      - "8081:8081"
+
+  catalog-service:
+    build: ./model
+    ports:
+      - "8082:8082"
